@@ -1,6 +1,6 @@
 #from CrawlingModule import MongoDB
 from pymongo import MongoClient
-import XueQiu
+
 import re
 import datetime
 #a= MongoDB.MongoDBHelper()
@@ -137,9 +137,9 @@ def getText(fixed_keyword,keyID):
         check(datas,fixed_keyword,result)
         #print(a)
     for result in results2:
-        #print(result)
+
         check2(datas,fixed_keyword,result)
-        #print(a)
+
     # 关闭连接
     sorted_datas = sorted(datas, key=lambda x: x["时间"], reverse=True)
     text=''

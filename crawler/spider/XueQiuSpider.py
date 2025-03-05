@@ -24,7 +24,7 @@ class XueQiuSpider(BaseSpider):
             'accept-encoding': 'gzip, deflate, br, zstd',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
             'connection': 'keep-alive',
-            'cookie': 'cookiesu=621739772999355; xqat=1',
+            'cookie': f'cookiesu=621569772988355; xqat={random.randint(1,500000)}',
             'elastic-apm-traceparent': '00-20e79fc55e9b4d714bd12ad2f8f991c8-5aeebda2e9f67a7e-00',
             'host': 'xueqiu.com',
             'referer': referer,#是可以变化的最好是爬几次换一个股票代码然后换一个md5再爬
@@ -37,9 +37,9 @@ class XueQiuSpider(BaseSpider):
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0',
             'x-requested-with': 'XMLHttpRequest'
         }
-        for i in range(1, count+1):
+        i=1
+        while i<count+1:
             if self.is_running is False:
-                print (123456)
                 break
 
             if last_id=='':
@@ -48,18 +48,20 @@ class XueQiuSpider(BaseSpider):
                 url = f'https://xueqiu.com/query/v1/symbol/search/status.json?count=10&comment=0&symbol={symbol}&hl=0&source=all&sort=time&page={i}&q=&type=11&last_id={last_id}'
 
             url =f'{url}&md5__1038={self.md5(url)}'
-            response = requests.get(url, headers=headers)
- 
-            if response.status_code == 200:
-                try:
-                    t_json=json.loads(response.text)
-                    count=t_json['maxPage']
-                    last_id = self.json_get(t_json)
-                except:
-                    logging.warning(f'获取{symbol}的第{i}页数据网络出现问题')
-            logging.info(f"获取了{i}页数据")
-
-            #time.sleep(random.uniform(1.0, 5.0))
+            try:
+                response = requests.get(url, headers=headers)
+    
+                if response.status_code == 200:
+                    try:
+                        t_json=json.loads(response.text)
+                        count=t_json['maxPage']
+                        last_id = self.json_get(t_json)
+                    except:
+                        logging.warning(f'获取{symbol}的第{i}页数据网络出现问题')
+                logging.info(f"获取了{i}页数据")
+                i=i+1
+            except :
+                time.sleep(60)
         self.is_running=False
         return {'name':'XueQiu','data':self.datas}
 

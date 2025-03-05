@@ -4,7 +4,8 @@ class BaseSpider:
         self.name  =  name
         self.is_running = False
 
-
+    def start():
+        pass
     def stop(self):
         """
         停止爬虫

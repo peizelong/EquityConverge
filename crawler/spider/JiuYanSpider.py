@@ -15,9 +15,10 @@ class JiuYanSpider(BaseSpider):
         self.datas = []
 
     def run(self,new_time):
+        self.datas = []
         if self.is_running == True:
             return None
-        i=0
+        i=1
         while True:
             url ="https://app.jiuyangongshe.com/jystock-app/api/v2/article/community"
 
@@ -53,6 +54,7 @@ class JiuYanSpider(BaseSpider):
             res = requests.post(url,data=json_data,headers=headers)
             if res.status_code == 200:
                 if res.json()['msg'] == '':
+                    #print(res.json())
                     i=i+1
                     if self.__Get_url_pool(res.json(),new_time)==False:
                         print('已经没有最新的帖子了')
@@ -62,9 +64,11 @@ class JiuYanSpider(BaseSpider):
             else:
                 
                 print(f"url请求失败，状态码: {res.status_code}")
+            print(i)
             time.sleep(random.uniform(1, 10))
             
-        logging.info(f'XueQiu最新文章提取完成,共{len(self.datas)}篇')
+            
+        print(f'XueQiu最新文章链接提取完成,共{len(self.datas)}篇')
         # 提取链接内的文章
         #print(self.datas)
         for i in range(len(self.datas)):
@@ -108,7 +112,7 @@ class JiuYanSpider(BaseSpider):
             #print(url)
             response = requests.get(f"https://www.jiuyangongshe.com/a/{url}", headers=headers)
             if response.status_code == 200:
-               # print(response.text)
+                #print(1)
                 return response.text                
             else:
                 print(f"https://www.jiuyangongshe.com/a/{url}")
